@@ -19,11 +19,22 @@ struct position {
     const char *filename;
 };
 
+#define CASE_NUMBER \
+    case '0':         \
+    case '1':         \
+    case '2':         \
+    case '3':         \
+    case '4':         \
+    case '5':         \
+    case '6':         \
+    case '7':         \
+    case '8':         \
+    case '9'
+
 typedef enum {
     LEXICAL_ANALYSIS_OK,
     LEXICAL_ANALYSIS_INPUT_ERROR,
 } lexing_state;
-
 
 /**
  * token type enumeration
@@ -45,6 +56,7 @@ typedef enum {
 struct token {
     token_type type;
     int flags;
+    struct position position;
     //this union represents the value of different token type
     union {
         char cVal; //char
@@ -136,5 +148,9 @@ void *lexing_process_private(struct lexing_process *lexingProcess);
 struct vector *lexing_process_tokens(struct lexing_process *lexingProcess);
 
 lexing_state lex(struct lexing_process *lexingProcess);
+
+void compile_error(struct compile_process *compileProcess, const char *msg, ...);
+
+void compile_warning(struct compile_process *compileProcess, const char *msg, ...);
 
 #endif

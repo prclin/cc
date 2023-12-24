@@ -1,4 +1,6 @@
 #include "compiler.h"
+#include <stdarg.h>
+#include <stdlib.h>
 
 //default function implementations
 struct lexing_process_functions compiler_lexing_functions = {
@@ -7,6 +9,38 @@ struct lexing_process_functions compiler_lexing_functions = {
         compile_process_push_char
 };
 
+/**
+ * print the error message to standard error output.
+ * @param compileProcess
+ * @param msg
+ * @param ...
+ */
+void compile_error(struct compile_process *compiler, const char *msg, ...) {
+    va_list args;
+    va_start(args, msg);
+    vfprintf(stderr, msg, args);
+    va_end(args);
+
+    fprintf(stderr, "on line %i, column %i in file %s \n", compiler->position.line,
+            compiler->position.column, compiler->iFile.abs_path);
+    exit(-1);
+}
+
+/**
+ * print the warning message to standard error output.
+ * @param compileProcess
+ * @param msg
+ * @param ...
+ */
+void compile_warning(struct compile_process *compiler, const char *msg, ...) {
+    va_list args;
+    va_start(args, msg);
+    vfprintf(stderr, msg, args);
+    va_end(args);
+
+    fprintf(stderr, "on line %i, column %i in file %s \n", compiler->position.line,
+            compiler->position.column, compiler->iFile.abs_path);
+}
 
 /**
  * this function compile the input file and output to the specified destination with the particular flags.
